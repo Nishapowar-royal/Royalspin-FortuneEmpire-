@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#0b1020" />
+    <meta
+      name="description"
+      content="Royalspin Fortune Empire — a mobile-friendly casino-style game and owner dashboard."
+    />
+    <title>Royalspin | Fortune Empire</title>
+    <link rel="manifest" href="manifest.json" />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="bg-glow"></div>
+
+    <header class="topbar">
+      <div class="brand">
+        <span class="brand-mark">♠</span>
+        <div>
+          <p class="eyebrow">Lucky Royale</p>
+          <h1>Royalspin</h1>
+        </div>
+      </div>
+      <button class="ghost-btn" id="installBtn" hidden>Install App</button>
+    </header>
+
+    <main class="layout">
+      <section class="panel hero-panel">
+        <div class="hero-copy">
+          <p class="small-label">Fortune Empire</p>
+          <h2>Spin your way to the next big win</h2>
+          <p>
+            Classic slot-inspired gameplay with big payouts, live stats, and a
+            polished mobile-first casino experience.
+          </p>
+          <div class="cta-row">
+            <button id="spinBtn" class="primary-btn">Spin Now</button>
+            <button id="resetBtn" class="secondary-btn">Reset</button>
+          </div>
+        </div>
+
+        <div class="machine-wrap">
+          <div class="slot-machine">
+            <div class="screen">
+              <div class="reels" id="reels">
+                <div class="reel" data-index="0">7</div>
+                <div class="reel" data-index="1">7</div>
+                <div class="reel" data-index="2">7</div>
+              </div>
+              <div class="status" id="statusText">Ready to spin</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="stats-grid">
+        <article class="stat-card accent-gold">
+          <span>Balance</span>
+          <strong id="balance">2500</strong>
+        </article>
+        <article class="stat-card accent-blue">
+          <span>Current Bet</span>
+          <strong id="betValue">50</strong>
+        </article>
+        <article class="stat-card accent-pink">
+          <span>Jackpot</span>
+          <strong id="jackpot">12000</strong>
+        </article>
+        <article class="stat-card accent-green">
+          <span>Last Win</span>
+          <strong id="lastWin">0</strong>
+        </article>
+      </section>
+
+      <section class="content-grid">
+        <article class="panel dashboard-panel">
+          <div class="section-head">
+            <h3>Owner Dashboard</h3>
+            <span class="live-pill">LIVE</span>
+          </div>
+
+          <div class="dashboard-list">
+            <div>
+              <label>Players online</label>
+              <strong id="playersOnline">124</strong>
+            </div>
+            <div>
+              <label>Total spins</label>
+              <strong id="totalSpins">8782</strong>
+            </div>
+            <div>
+              <label>Conversion</label>
+              <strong id="conversion">31.4%</strong>
+            </div>
+            <div>
+              <label>Active promo</label>
+              <strong>Fortune Rush</strong>
+            </div>
+          </div>
+        </article>
+
+        <article class="panel leaderboard-panel">
+          <div class="section-head">
+            <h3>Top Players</h3>
+          </div>
+
+          <ul class="leaderboard" id="leaderboard">
+            <li><span>1. Aisha</span><strong>12,500</strong></li>
+            <li><span>2. Kunal</span><strong>10,900</strong></li>
+            <li><span>3. Mya</span><strong>9,850</strong></li>
+            <li><span>4. Leo</span><strong>8,960</strong></li>
+          </ul>
+        </article>
+      </section>
+    </main>
+
+    <script src="script.js"></script>
+  </body>
+</html>

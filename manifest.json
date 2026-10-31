@@ -1,0 +1,143 @@
+const symbols = ["7", "💎", "🍒", "⭐", "💰", "🔔"];
+
+const state = {
+  balance: 2500,
+  bet: 50,
+  jackpot: 12000,
+  lastWin: 0,
+  spins: 8782,
+  playersOnline: 124,
+  conversion: 31.4,
+};
+
+const reelEls = [...document.querySelectorAll(".reel")];
+const balanceEl = document.getElementById("balance");
+const betValueEl = document.getElementById("betValue");
+const jackpotEl = document.getElementById("jackpot");
+const lastWinEl = document.getElementById("lastWin");
+const statusTextEl = document.getElementById("statusText");
+const playersOnlineEl = document.getElementById("playersOnline");
+const totalSpinsEl = document.getElementById("totalSpins");
+const conversionEl = document.getElementById("conversion");
+const installBtn = document.getElementById("installBtn");
+const spinBtn = document.getElementById("spinBtn");
+const resetBtn = document.getElementById("resetBtn");
+
+function renderStats() {
+  balanceEl.textContent = state.balance.toLocaleString();
+  betValueEl.textContent = state.bet.toLocaleString();
+  jackpotEl.textContent = state.jackpot.toLocaleString();
+  lastWinEl.textContent = state.lastWin.toLocaleString();
+  playersOnlineEl.textContent = state.playersOnline;
+  totalSpinsEl.textContent = state.spins.toLocaleString();
+  conversionEl.textContent = `${state.conversion.toFixed(1)}%`;
+}
+
+function pickRandomSymbol() {
+  return symbols[Math.floor(Math.random() * symbols.length)];
+}
+
+function calculateWin(reels) {
+  const [a, b, c] = reels;
+
+  if (a === b && b === c) {
+    const payoutMap = {
+      "7": 20,
+      "💎": 15,
+      "🍒": 12,
+      "⭐": 10,
+      "💰": 18,
+      "🔔": 14,
+    };
+
+    return state.bet * payoutMap[a];
+  }
+
+  if (a === b || b === c || a === c) {
+    return state.bet * 3;
+  }
+
+  return 0;
+}
+
+function spin() {
+  if (state.balance < state.bet) {
+    statusTextEl.textContent = "Low balance — increase your bet or reset";
+    statusTextEl.style.color = "#ff8aa5";
+    return;
+  }
+
+  state.balance -= state.bet;
+  state.spins += 1;
+
+  const result = reelEls.map(() => pickRandomSymbol());
+  const winAmount = calculateWin(result);
+
+  reelEls.forEach((reel, index) => {
+    reel.textContent = result[index];
+    reel.style.transform = "scale(0.95)";
+    reel.style.transition = "transform 0.15s ease";
+    setTimeout(() => {
+      reel.style.transform = "scale(1)";
+    }, 100 + index * 60);
+  });
+
+  state.lastWin = winAmount;
+  if (winAmount > 0) {
+    state.balance += winAmount;
+    state.jackpot = Math.max(5000, state.jackpot - Math.round(winAmount * 0.4));
+    statusTextEl.textContent = `Jackpot! You won ${winAmount.toLocaleString()}`;
+    statusTextEl.style.color = "#64f2a0";
+  } else {
+    state.jackpot += Math.round(state.bet * 0.8);
+    statusTextEl.textContent = "No match — try again";
+    statusTextEl.style.color = "#f9c74f";
+  }
+
+  state.playersOnline = Math.max(80, state.playersOnline + (Math.random() > 0.5 ? 1 : -1));
+  state.conversion = Math.min(48, Math.max(18, state.conversion + (Math.random() - 0.5) * 2));
+
+  renderStats();
+}
+
+function resetGame() {
+  state.balance = 2500;
+  state.bet = 50;
+  state.jackpot = 12000;
+  state.lastWin = 0;
+  state.spins = 8782;
+  state.playersOnline = 124;
+  state.conversion = 31.4;
+  statusTextEl.textContent = "Game reset";
+  statusTextEl.style.color = "#f9c74f";
+  renderStats();
+}
+
+spinBtn.addEventListener("click", spin);
+resetBtn.addEventListener("click", resetGame);
+
+let deferredPrompt = null;
+
+window.addEventListener("beforeinstallprompt", (event) => {
+  event.preventDefault();
+  deferredPrompt = event;
+  installBtn.hidden = false;
+});
+
+installBtn.addEventListener("click", async () => {
+  if (!deferredPrompt) return;
+  deferredPrompt.prompt();
+  await deferredPrompt.userChoice;
+  deferredPrompt = null;
+  installBtn.hidden = true;
+});
+
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("./service-worker.js").catch(() => {
+      console.log("Service worker registration failed");
+    });
+  });
+}
+
+renderStats();
